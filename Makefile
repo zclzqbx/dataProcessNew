@@ -1,10 +1,10 @@
-VPATH = bus acline fstring share toponode
+VPATH = ../src
 MIDFILE = bus.o acline.o share.o fstring.o toponode.o getData.o 
 
 getData:$(MIDFILE)
-	cc -o $(MIDFILE)
+	g++ -o getData $(MIDFILE)
 
-bus.o:bus.cpp
+bus.o:bus.cpp bus.h
 	g++ -Wall -c bus.cpp
 	
 acline.o:acline.cpp
