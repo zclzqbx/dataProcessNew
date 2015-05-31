@@ -1,8 +1,8 @@
-VPATH = ./bus:acline:fstring:share:toponode
-MIDFILE = bus.o acline.o share.o fstring.o toponode.o getData.o 
+MIDFILE = acline.o share.o fstring.o toponode.o getData.o bus.o
+SHELL = cmd.exe
 
 getData:$(MIDFILE)
-	cc -o $(MIDFILE)
+	g++ -Wall $(MIDFILE) 
 
 bus.o:bus.cpp
 	g++ -Wall -c bus.cpp
@@ -21,6 +21,7 @@ share.o:share.cpp
 	
 getData.o:getData.cpp
 	g++ -Wall -c getData.cpp
-	
+
+.PHONY: clean
 clean:
 	rm $(MIDFILE)
