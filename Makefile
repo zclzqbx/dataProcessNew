@@ -1,4 +1,4 @@
-VPATH = bus acline fstring share toponode
+VPATH = ./bus:acline:fstring:share:toponode
 MIDFILE = bus.o acline.o share.o fstring.o toponode.o getData.o 
 
 getData:$(MIDFILE)
