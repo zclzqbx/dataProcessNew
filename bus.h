@@ -31,7 +31,8 @@ public:
 	friend bool operator==(const Bus&,const Bus&);
 	friend ostream& operator<<(ostream& ,Bus&);//输出所有信息
 	
-	bool printBusOnline(ostream& );//打印所有非停运机组
+	bool printBusOnline(ostream& );//打印所有在线机组
+	
 
 private:
 	int busCode;//节点编号

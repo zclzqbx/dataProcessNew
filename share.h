@@ -28,5 +28,9 @@ void getUnit(ifstream& ,vector<Unit>&);
 void getData(ifstream&  ,vector<Bus>& ,vector<ACline>& ,vector<TopoNode>& ,
 				vector<Unit>& );
 
-
+int getNumberOfBusOnline(vector<Bus>& );
+int getNumberOfAClineOnline(vector<ACline>& );
+// vector<string> getOnlineBusName
+int getNumberOfUnitOnline(vector<Unit>& );
+				
 #endif //SHARE_FUNCTION

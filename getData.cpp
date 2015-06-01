@@ -1,6 +1,7 @@
 #include "share.h"
 #include <fstream>
 #include <vector>
+#include <iostream>
 
 using namespace std;
 
@@ -93,6 +94,10 @@ int main()
 			continue;
 	}
 	output5<<endl<<breakBusInAcline<<endl;*/
+	
+	cout<<"Bus中在线的节点:"<<getNumberOfBusOnline(busList)<<endl;
+	cout<<"ACline中在线的支路:"<<getNumberOfAClineOnline(aclineList)<<endl;
+	cout<<"Unit中在线的机组:"<<getNumberOfUnitOnline(unitList)<<endl;
 	
 	input.close();
 	output1.close();

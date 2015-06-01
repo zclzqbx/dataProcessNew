@@ -306,6 +306,7 @@ void getAClineData(ifstream& input,vector<ACline>& vecACline)
 				size_t t=0;
 				for(;t<vecACline.size();++t)
 				{//判断是否存在相同支路，其实没必要检索整个容器，只需检索前若干个
+				//其实没必要判断，不会出现相同支路
 					if(vecACline[t]==acline)
 					{
 						str.clear();
@@ -598,9 +599,46 @@ void getData(ifstream& input,vector<Bus>& vecBus,vector<ACline>& vecACLine,
 				vector<TopoNode>& vecTopoNode,vector<Unit>& vecUnit)
 {//调用其他get函数，一次性读取
 //有必要了解input的getline是怎么工作的。
-//使用过一次，然后再次使用难道没有影响吗？
+//使用过一次，然后再次使用是有影响的
+//所有在使用输入流时应该注意顺序，否则会导致无法跳出
 	getBusData(input,vecBus);
 	getAClineData(input,vecACLine);	
 	getUnit(input,vecUnit);
 	getTopoNode(input,vecTopoNode);
+}
+
+int getNumberOfBusOnline(vector<Bus>& vecBus)
+{
+	int Num(0);
+	for(size_t i=0;i<vecBus.size();++i)
+	{
+		if(!vecBus[i].getBusOff())
+			Num++;
+	}
+	return Num;
+}
+
+int getNumberOfAClineOnline(vector<ACline>& vecACline)
+{
+	int Num(0);
+	for(size_t i=0;i<vecACline.size();++i)
+	{
+		if(!vecACline[i].getAClineI_off() && !vecACline[i].getAClineJ_off())
+			Num++;
+			
+	}
+	return Num;
+}
+
+int getNumberOfUnitOnline(vector<Unit>& vecUnit)
+{
+	int Num(0);
+	for(size_t i=0;i<vecUnit.size();++i)
+	{
+		if(!vecUnit[i].getUnitOff())
+		{
+			Num++;
+		}
+	}
+	return Num;
 }
