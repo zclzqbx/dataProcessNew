@@ -424,7 +424,177 @@ void getTopoNode(ifstream& input,vector<TopoNode>& vecTopoNode)
 	}
 }
 
-void getData(ifstream& input,vector<Bus>& vecBus,vector<ACline>& vecACLine ,
+/*Unit createUnit(bool eq,double v_Rate,double p_Rate,string topoNode,
+				double p,double q,double ue,double ang,bool off,
+				double p_H,double p_L,double q_H,double q_L,int volt)
+{
+	Unit unit;	
+	unit.setUnitEq(eq);
+	unit.setUnitV_Rate(v_Rate);
+	unit.setUnitP_Rate(p_Rate);
+	unit.setUnitTopoNode(topoNode);
+	unit.setUnitP(p);
+	unit.setUnitQ(q);
+	unit.setUnitUe(ue);
+	unit.setUnitAng(ang);
+	unit.setUnitOff(off);
+	unit.setUnitP_H(p_H);
+	unit.setUnitP_L(p_L);
+	unit.setUnitQ_H(q_H);
+	unit.setUnitQ_L(q_L);
+	unit.setUnitVolt(volt);
+	return unit;
+}
+
+void getUnit(ifstream& input,vector<Unit>& vecUnit)
+{
+	if(!input)
+		return;
+	string str;
+	
+	while(1)
+	{
+		str.clear();
+		getline(input,str);
+		if(str=="<Unit::nx type=全数>")
+		{//需要先读取很多行无用信息才能找到目标行，检索方法可以考虑改进
+			str.clear();
+			getline(input,str);
+			vector<string> vecUnitHeader=split(str);
+			
+			int UnitEqColumn(0);//识别表头
+			int UnitV_RateColumn(0);
+			int UnitP_RateColumn(0);
+			int UnitTopoNodeColumn(0);
+			int UnitPColumn(0);
+			int UnitQColumn(0);
+			int UnitUeColumn(0);
+			int UnitAngColumn(0);
+			int UnitOffColumn(0);
+			int UnitP_HColumn(0);
+			int UnitP_LColumn(0);
+			int UnitQ_HColumn(0);
+			int UnitQ_LColumn(0);
+			int UnitVoltColumn(0);
+			
+			for(size_t t=0;t<vecUnitHeader.size();++t)
+			{//考虑switch，更清晰
+				if(vecUnitHeader[t]=="Eq")
+				{
+					UnitEqColumn=t;
+				}
+				else if(vecUnitHeader[t]=="V_Rate")
+				{
+					UnitV_RateColumn=t;
+				}
+				else if(vecUnitHeader[t]=="P_Rate")
+				{
+					UnitP_RateColumn=t;
+				}
+				else if(vecUnitHeader[t]=="node")
+				{
+					UnitTopoNodeColumn=t;
+				}
+				else if(vecUnitHeader[t]=="P")
+				{
+					UnitPColumn=t;
+				}
+				else if(vecUnitHeader[t]=="Q")
+				{
+					UnitQColumn=t;
+				}
+				else if(vecUnitHeader[t]=="Ue")
+				{
+					UnitUeColumn=t;
+				}
+				else if(vecUnitHeader[t]=="Ang")
+				{
+					UnitAngColumn=t;
+				}
+				else if(vecUnitHeader[t]=="off")
+				{
+					UnitOffColumn=t;
+				}
+				else if(vecUnitHeader[t]=="P_H")
+				{
+					UnitP_HColumn=t;
+				}
+				else if(vecUnitHeader[t]=="P_L")
+				{
+					UnitP_LColumn=t;
+				}
+				else if(vecUnitHeader[t]=="Q_H")
+				{
+					UnitQ_HColumn=t;
+				}
+				else if(vecUnitHeader[t]=="Q_L")
+				{
+					UnitQ_LColumn=t;
+				}
+				else if(vecUnitHeader[t]=="Volt")
+				{
+					UnitVoltColumn=t;
+				}
+				else
+					continue;
+			}
+			
+			const int UnitEqColumnConst=UnitEqColumn;//识别表头
+			const int UnitV_RateColumnConst=UnitV_RateColumn;
+			const int UnitP_RateColumnConst=UnitP_RateColumn;
+			const int UnitTopoNodeColumnConst=UnitTopoNodeColumn;
+			const int UnitPColumnConst=UnitPColumn;
+			const int UnitQColumnConst=UnitQColumn;
+			const int UnitUeColumnConst=UnitUeColumn;
+			const int UnitAngColumnConst=UnitAngColumn;
+			const int UnitOffColumnConst=UnitOffColumn;
+			const int UnitP_HColumnConst=UnitP_HColumn;
+			const int UnitP_LColumnConst=UnitP_LColumn;
+			const int UnitQ_HColumnConst=UnitQ_HColumn;
+			const int UnitQ_LColumnConst=UnitQ_LColumn;
+			const int UnitVoltColumnConst=UnitVoltColumn;
+			//记录所需要行列的位置
+
+			str.clear();//其中一行数据是不需要的，先清除一行数据
+			getline(input,str);
+			str.clear();
+			getline(input,str);
+			
+			while(str!="</Unit::nx>")
+			{
+				vector<string> vec=split(str);
+				//所有数据都已经存放在vec中，接下来是选出有用数据,对数所进行转换
+				bool eq=stringToBool(vec[UnitEqColumnConst]);
+				double v_Rate=stringToDouble(vec[UnitV_RateColumnConst]);
+				double p_Rate=stringToDouble(vec[UnitP_RateColumnConst]);
+				string topoNode=vec[UnitTopoNodeColumnConst];
+				double p=stringToDouble(vec[UnitPColumnConst]);
+				double q=stringToDouble(vec[UnitQColumnConst]);
+				double ue=stringToDouble(vec[UnitUeColumnConst]);
+				double ang=stringToDouble(vec[UnitAngColumnConst]);
+				bool off=stringToBool(vec[vec[UnitOffColumnConst]]);
+				double p_H=stringToDouble(vec[UnitP_HColumnConst]);
+				double p_L=stringToDouble(vec[UnitP_LColumnConst]);
+				double q_H=stringToDouble(vec[UnitQ_HColumnConst]);
+				double q_L=stringToDouble(vec[UnitQ_LColumnConst]);
+				int volt=stringToInt(vec[UnitVoltColumnConst]);
+				
+				//在bus表中找到对应的节点才创建ACline对象			
+				Unit unit=createUnit(eq,v_Rate,p_Rate,topoNode,p,q,ue,ang,off,
+										p_H,p_L,q_H,dq_L,volt);
+
+				vecUnit.push_back(unit);
+
+				str.clear();
+				getline(input,str);
+			}
+		}
+		if(str=="</Unit::nx>")
+			break;
+	}
+}
+*/
+void getData(ifstream& input,vector<Bus>& vecBus,vector<ACline>& vecACLine,
 				vector<TopoNode>& vecTopoNode)
 {//调用其他get函数，一次性读取
 //有必要了解input的getline是怎么工作的。
@@ -432,4 +602,5 @@ void getData(ifstream& input,vector<Bus>& vecBus,vector<ACline>& vecACLine ,
 	getBusData(input,vecBus);
 	getAClineData(input,vecACLine);
 	getTopoNode(input,vecTopoNode);
+	// getUnit(input,vecUnit);
 }

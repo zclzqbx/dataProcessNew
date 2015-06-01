@@ -1,5 +1,6 @@
 #include "share.h"
 #include <fstream>
+#include <vector>
 
 using namespace std;
 
@@ -32,42 +33,42 @@ int main()
 	}
 	output1<<endl<<"结点总数:"<<printNum<<endl;
 	
-	printNum=0;
-	for(size_t j=0;j!=aclineList.size();++j)
-	{
+	// printNum=0;
+	// for(size_t j=0;j!=aclineList.size();++j)
+	// {
 		// output2<<aclineList[j]<<endl;
-		if(aclineList[j].printAClineOnline(output2))
-		{
-			printNum++;
-			output2<<endl;
-		}
-	}
-	output2<<endl<<"支路总数:"<<printNum<<endl;
+		// if(aclineList[j].printAClineOnline(output2))
+		// {
+			// printNum++;
+			// output2<<endl;
+		// }
+	// }
+	// output2<<endl<<"支路总数:"<<printNum<<endl;
 	
-	printNum=0;
-	for(size_t j=0;j!=topoNodeList.size();++j)
-	{
-		output3<<topoNodeList[j]<<endl;
-	}
+	// printNum=0;
+	// for(size_t j=0;j!=topoNodeList.size();++j)
+	// {
+		// output3<<topoNodeList[j]<<endl;
+	// }
 	
-	vector<Bus> noExistInTopoNodeList;
-	for(size_t t=0;t<busList.size();++t)
-	{
-		size_t k=0;
-		for(;k<topoNodeList.size();++k)
-		{
-			if(busList[t].getBusName()==topoNodeList[k].getTopoNodeName())
-				break;
-		}
-		if(k>=topoNodeList.size())
-			noExistInTopoNodeList.push_back(busList[t]);
-	}
-	output4<<"在Bus中存在，但在Toponode中不存在的节点："<<noExistInTopoNodeList.size()<<endl;
-	for(size_t i=0;i<noExistInTopoNodeList.size();++i)
-	{
-		output4<<noExistInTopoNodeList[i].getBusName()<<endl
-			<<noExistInTopoNodeList[i].getBusOff()<<endl<<endl;
-	}
+	// vector<Bus> noExistInTopoNodeList;
+	// for(size_t t=0;t<busList.size();++t)
+	// {
+		// size_t k=0;
+		// for(;k<topoNodeList.size();++k)
+		// {
+			// if(busList[t].getBusName()==topoNodeList[k].getTopoNodeName())
+				// break;
+		// }
+		// if(k>=topoNodeList.size())
+			// noExistInTopoNodeList.push_back(busList[t]);
+	// }
+	// output4<<"在Bus中存在，但在Toponode中不存在的节点："<<noExistInTopoNodeList.size()<<endl;
+	// for(size_t i=0;i<noExistInTopoNodeList.size();++i)
+	// {
+		// output4<<noExistInTopoNodeList[i].getBusName()<<endl
+			// <<noExistInTopoNodeList[i].getBusOff()<<endl<<endl;
+	// }
 	
 	// printNum=0;
 	// output5<<"ACline中有断开："<<endl;
