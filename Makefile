@@ -1,4 +1,5 @@
-MIDFILE = bus.o share.o fstring.o acline.o toponode.o getData.o
+MIDFILE = bus.o share.o fstring.o acline.o\
+          toponode.o getData.o unit.o
 
 getData:$(MIDFILE)
 	g++ -Wall -o getData -g $(MIDFILE)

@@ -1,2 +1,4 @@
 #注释
 *.o
+*.txt
+getData.exe

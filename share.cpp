@@ -424,7 +424,7 @@ void getTopoNode(ifstream& input,vector<TopoNode>& vecTopoNode)
 	}
 }
 
-/*Unit createUnit(bool eq,double v_Rate,double p_Rate,string topoNode,
+Unit createUnit(bool eq,double v_Rate,double p_Rate,string topoNode,
 				double p,double q,double ue,double ang,bool off,
 				double p_H,double p_L,double q_H,double q_L,int volt)
 {
@@ -572,7 +572,7 @@ void getUnit(ifstream& input,vector<Unit>& vecUnit)
 				double q=stringToDouble(vec[UnitQColumnConst]);
 				double ue=stringToDouble(vec[UnitUeColumnConst]);
 				double ang=stringToDouble(vec[UnitAngColumnConst]);
-				bool off=stringToBool(vec[vec[UnitOffColumnConst]]);
+				bool off=stringToBool(vec[UnitOffColumnConst]);
 				double p_H=stringToDouble(vec[UnitP_HColumnConst]);
 				double p_L=stringToDouble(vec[UnitP_LColumnConst]);
 				double q_H=stringToDouble(vec[UnitQ_HColumnConst]);
@@ -581,7 +581,7 @@ void getUnit(ifstream& input,vector<Unit>& vecUnit)
 				
 				//在bus表中找到对应的节点才创建ACline对象			
 				Unit unit=createUnit(eq,v_Rate,p_Rate,topoNode,p,q,ue,ang,off,
-										p_H,p_L,q_H,dq_L,volt);
+										p_H,p_L,q_H,q_L,volt);
 
 				vecUnit.push_back(unit);
 
@@ -593,14 +593,14 @@ void getUnit(ifstream& input,vector<Unit>& vecUnit)
 			break;
 	}
 }
-*/
+
 void getData(ifstream& input,vector<Bus>& vecBus,vector<ACline>& vecACLine,
-				vector<TopoNode>& vecTopoNode)
+				vector<TopoNode>& vecTopoNode,vector<Unit>& vecUnit)
 {//调用其他get函数，一次性读取
 //有必要了解input的getline是怎么工作的。
 //使用过一次，然后再次使用难道没有影响吗？
 	getBusData(input,vecBus);
-	getAClineData(input,vecACLine);
+	getAClineData(input,vecACLine);	
+	getUnit(input,vecUnit);
 	getTopoNode(input,vecTopoNode);
-	// getUnit(input,vecUnit);
 }
