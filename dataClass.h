@@ -215,9 +215,11 @@ public:
 	void setTransXk(double r){transXk=r;}
 	void setTransRj(double r){transRj=r;}
 	void setTransXj(double r){transXj=r;}
-	void setTransI_node(int node){transI_node=node;}
-	void setTransK_node(int node){transK_node=node;}
-	void setTransJ_node(int node){transJ_node=node;}
+	
+	void setTransI_node(string node){transI_node=node;}
+	void setTransK_node(string node){transK_node=node;}
+	void setTransJ_node(string node){transJ_node=node;}
+	
 	void setTransI_P(double p){transI_P=p;}
 	void setTransI_Q(double p){transI_Q=p;}
 	void setTransK_P(double p){transK_P=p;}
@@ -226,6 +228,9 @@ public:
 	void setTransJ_Q(double p){transJ_Q=p;}
 	void setTransI_tap(int tap){transI_tap=tap;}
 	void setTransK_tap(int tap){transK_tap=tap;}
+	void setTransI_off(bool iOff){transI_off=iOff;}
+	void setTransK_off(bool kOff){transK_off=kOff;}
+	void setTransJ_off(bool jOff){transJ_off=jOff;}
 	
 	//获取变压器参数值
 	int getTransCode()const{return transCode;}
@@ -253,9 +258,9 @@ public:
 	double getTransXk()const{return transXk;}
 	double getTransRj()const{return transRj;}
 	double getTransXj()const{return transXj;}
-	int getTransI_node()const{return transI_node;}
-	int getTransK_node()const{return transK_node;}
-	int getTransJ_node()const{return transJ_node;}
+	string getTransI_node()const{return transI_node;}
+	string getTransK_node()const{return transK_node;}
+	string getTransJ_node()const{return transJ_node;}
 	double getTransI_P()const{return transI_P;}
 	double getTransI_Q()const{return transI_Q;}
 	double getTransK_P()const{return transK_P;}
@@ -264,6 +269,9 @@ public:
 	double getTransJ_Q()const{return transJ_Q;}
 	int getTransI_tap()const{return transI_tap;}
 	int getTransK_tap()const{return transK_tap;}
+	bool getTransI_off()const{return transI_off;}
+	bool getTransK_off()const{return transK_off;}
+	bool getTransJ_off()const{return transJ_off;}
 
 private:
 	int transCode;//变压器编号
@@ -291,9 +299,9 @@ private:
 	double transXk;//中压绕组电抗
 	double transRj;//低压绕组电阻
 	double transXj;//低压绕组电抗
-	int transI_node;//高压端所在拓扑节点
-	int transK_node;//中压端所在拓扑节点
-	int transJ_node;//低压端所在拓扑节点
+	string transI_node;//高压端所在拓扑节点
+	string transK_node;//中压端所在拓扑节点
+	string transJ_node;//低压端所在拓扑节点
 	double transI_P;//高压端有功功率
 	double transI_Q;//高压端无功功率
 	double transK_P;//中压端有功功率
@@ -302,10 +310,43 @@ private:
 	double transJ_Q;//低压端无功功率
 	int transI_tap;//高压侧分接头位置
 	int transK_tap;//中压侧分接头位置
+	bool transI_off;//断开标志
+	bool transK_off;
+	bool transJ_off;
 	
 // bool operator==(const Bus&);
-friend bool operator==(const Transformer&,const Transformer&);
-friend ostream& operator<<(ostream& ,Transformer&);	
+	friend bool operator==(const Transformer&,const Transformer&);
+	friend ostream& operator<<(ostream& ,Transformer&);	
+};
+
+
+//支路
+class Branch{
+public:
+	Branch(string ,string ,int ,double ,double ,double );
+	void setStartBus(string bus){startBus=bus;}
+	void setEndBus(string bus){endBus=bus;}
+	void setTransFlag(int flag){transFlag=flag;}
+	void setResistance(double R){resistance=R;}
+	void setReactance(double X){reactance=X;}
+	void setPowerLimit(double limit){powerLimit=limit;}
+	
+	string getStartBus()const{return startBus;}
+	string getEndBus()const{return endBus;}
+	int getTransFlag()const{return transFlag;}
+	double getResistance()const{return resistance;}
+	double getReactance()const{return reactance;}
+	double getPowerLimit()const{return powerLimit;}
+	
+	bool operator==(const Branch&);
+	friend ostream& operator<<(ostream& ,Branch&);	
+private:
+	string startBus;//起点
+	string endBus;//终点
+	int transFlag;//变压器编号
+	double resistance;//电阻
+	double reactance;//电抗
+	double powerLimit;//潮流上限
 };
 
 #endif //DATACLASS

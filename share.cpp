@@ -596,10 +596,13 @@ void getUnit(ifstream& input,vector<Unit>& vecUnit)
 	}
 }
 
-Transformer createTransformer(int code,int type,int i_Vol,int k_Vol,int j_Vol,int i_S,int k_S,int j_S,
-int itap_H,int itap_L,int itap_E,double itap_C,int itap_V,int ktap_H,int ktap_L,int ktap_E,double ktap_C,int ktap_V,int jtap_V,
-double ri,double xi,double rk,double xk,double rj,double xj,int i_node,int k_node,int j_node,double i_p,double i_q,double k_p,double k_q,double j_p,double j_q,
-int i_tap,int k_tap)//创建新线路
+Transformer createTransformer(int code,int type,int i_Vol,int k_Vol,int j_Vol,
+					int i_S,int k_S,int j_S,int itap_H,int itap_L,int itap_E,
+					double itap_C,int itap_V,int ktap_H,int ktap_L,int ktap_E,
+					double ktap_C,int ktap_V,int jtap_V,double ri,double xi,double rk,
+					double xk,double rj,double xj,string i_node,string k_node,string j_node,
+					double i_p,double i_q,double k_p,double k_q,double j_p,double j_q,
+					int i_tap,int k_tap,bool iOff,bool kOff,bool jOff)//创建新线路
 {
 	Transformer trans;
 	trans.setTransCode(code);
@@ -627,9 +630,11 @@ int i_tap,int k_tap)//创建新线路
 	trans.setTransXk(xk);
 	trans.setTransRj(rj);
 	trans.setTransXj(xj);
+	
 	trans.setTransI_node(i_node);
 	trans.setTransK_node(k_node);
 	trans.setTransJ_node(j_node);
+	
 	trans.setTransI_P(i_p);
 	trans.setTransI_Q(i_q);
 	trans.setTransK_P(k_p);
@@ -638,6 +643,10 @@ int i_tap,int k_tap)//创建新线路
 	trans.setTransJ_Q(j_q);
 	trans.setTransI_tap(i_tap);
 	trans.setTransK_tap(k_tap);
+	
+	trans.setTransI_off(iOff);
+	trans.setTransK_off(kOff);
+	trans.setTransJ_off(jOff);
 	
 	return trans;
 }
@@ -654,7 +663,6 @@ void getTransData(ifstream& input,vector<Transformer>& vecTrans)
 		getline(input,str);
 		if(str=="<Transformer::nx type=全数>")
 		{
-			int i=0;
 			str.clear();
 			getline(input,str);
 			vector<string> vecTransHeader=split(str);
@@ -696,6 +704,9 @@ void getTransData(ifstream& input,vector<Transformer>& vecTrans)
 			int transJ_QColumn(0);
 			int transI_tapColumn(0);
 			int transK_tapColumn(0);
+			int transI_offColumn(0);
+			int transK_offColumn(0);
+			int transJ_offColumn(0);
 
 			for(size_t t=0;t<vecTransHeader.size();++t)
 			{
@@ -843,7 +854,18 @@ void getTransData(ifstream& input,vector<Transformer>& vecTrans)
 				{
 					transK_tapColumn=t;
 				}
-				
+				else if(vecTransHeader[t]=="I_off")
+				{
+					transI_offColumn=t;
+				}	
+				else if(vecTransHeader[t]=="K_off")
+				{
+					transK_offColumn=t;
+				}	
+				else if(vecTransHeader[t]=="J_off")
+				{
+					transJ_offColumn=t;
+				}					
 				else
 					continue;
 			}
@@ -884,6 +906,9 @@ void getTransData(ifstream& input,vector<Transformer>& vecTrans)
 			const int transJ_QColumnConst=transJ_QColumn;
 			const int transI_tapColumnConst=transI_tapColumn;
 			const int transK_tapColumnConst=transK_tapColumn;
+			const int transI_offColumnConst=transI_offColumn;
+			const int transK_offColumnConst=transK_offColumn;
+			const int transJ_offColumnConst=transJ_offColumn;
 			//记录所需要行列的位置
 
 			str.clear();//其中一行数据是不需要的，先清除一行数据
@@ -920,9 +945,12 @@ void getTransData(ifstream& input,vector<Transformer>& vecTrans)
 				double xk=stringToDouble(vec[transXkColumnConst]);
 				double rj=stringToDouble(vec[transRjColumnConst]);
 				double xj=stringToDouble(vec[transXjColumnConst]);
-				int i_node=stringToInt(vec[transI_nodeColumnConst]);
-				int k_node=stringToInt(vec[transK_nodeColumnConst]);
-				int j_node=stringToInt(vec[transJ_nodeColumnConst]);
+				
+				string i_node=vec[transI_nodeColumnConst];
+				// string i_node="abcefdfdfaf";
+				string k_node=vec[transK_nodeColumnConst];
+				string j_node=vec[transJ_nodeColumnConst];
+				
 				double i_p=stringToDouble(vec[transI_PColumnConst]);
 				double i_q=stringToDouble(vec[transI_QColumnConst]);
 				double k_p=stringToDouble(vec[transK_PColumnConst]);
@@ -931,6 +959,10 @@ void getTransData(ifstream& input,vector<Transformer>& vecTrans)
 				double j_q=stringToDouble(vec[transJ_QColumnConst]);
 				int i_tap=stringToInt(vec[transI_tapColumnConst]);
 				int k_tap=stringToInt(vec[transK_tapColumnConst]);
+				
+				bool iOff=stringToBool(vec[transI_offColumnConst]);
+				bool kOff=stringToBool(vec[transK_offColumnConst]);
+				bool jOff=stringToBool(vec[transJ_offColumnConst]);
 
 				
 				//判断Transformer两端节点是否都在Bus表内，并找到对应的拓扑节点编号，满足则为有用信息
@@ -947,8 +979,8 @@ void getTransData(ifstream& input,vector<Transformer>& vecTrans)
 				Transformer trans=createTransformer( code, type, i_vol, k_vol, j_vol, i_s, k_s, j_s,
 				itap_h, itap_l, itap_e, itap_c, itap_v, ktap_h, ktap_l, ktap_e, ktap_c, ktap_v, jtap_v,
 				ri, xi, rk, xk, rj, xj, i_node, k_node, j_node, i_p, i_q, k_p, k_q, j_p, j_q,
-				i_tap, k_tap);
-				size_t t=0;
+				i_tap, k_tap , iOff, kOff, jOff);
+				/*size_t t=0;
 				for(;t<vecTrans.size();++t)
 				{
 					if(vecTrans[t]==trans)
@@ -958,9 +990,8 @@ void getTransData(ifstream& input,vector<Transformer>& vecTrans)
 						break;
 					}
 				}
-				if(t<vecTrans.size())continue;
+				if(t<vecTrans.size())continue;*/
 				vecTrans.push_back(trans);
-				i++;
 				
 				str.clear();
 				getline(input,str);
@@ -1021,4 +1052,137 @@ int getNumberOfUnitOnline(vector<Unit>& vecUnit)
 		}
 	}
 	return Num;
+}
+
+vector<string> busNameInAcline(vector<ACline>& vecACline)
+{
+	vector<string> vecString;
+	for(size_t i=0;i<vecACline.size();++i)
+	{
+		string iNodeName,jNodeName;
+		iNodeName=vecACline[i].getAClineI_node();
+		jNodeName=vecACline[i].getAClineJ_node();
+		bool iExist=false,jExist=false;
+		for(size_t j=0;j<vecString.size();++j)
+		{
+			if(vecString[j]==iNodeName)
+				iExist=true;
+			else if(vecString[j]==jNodeName)
+				jExist=true;
+			if(iExist && jExist)
+				break;
+		}
+		if(!iExist)vecString.push_back(iNodeName);
+		if(!jExist)vecString.push_back(jNodeName);
+	}
+	return vecString;
+}
+
+vector<string> busNameInTransformer(vector<Transformer>& vecTransformer)
+{
+	vector<string> vecString;
+	for(size_t i=0;i<vecTransformer.size();++i)
+	{
+		string iNodeName,kNodeName,jNodeName;
+		iNodeName=vecTransformer[i].getTransI_node();
+		kNodeName=vecTransformer[i].getTransK_node();
+		jNodeName=vecTransformer[i].getTransJ_node();
+		bool iExist=false,kExist=false,jExist=false;
+		for(size_t j=0;j<vecString.size();++j)
+		{
+			if(vecString[j]==iNodeName)
+				iExist=true;
+			else if(vecString[j]==kNodeName)
+				jExist=true;
+			else if(vecString[j]==jNodeName)
+				kExist=true;
+			if(iExist && kExist && jExist)
+				break;
+		}
+		if(!iExist && iNodeName!="0")vecString.push_back(iNodeName);
+		if(!kExist && kNodeName!="0")vecString.push_back(kNodeName);
+		if(!jExist && jNodeName!="0")vecString.push_back(jNodeName);
+	}
+	return vecString;
+}
+
+vector<Branch> totalBranch(vector<ACline>& vecACline,vector<Transformer>& vecTrans)
+{
+	vector<Branch> vecBranch;
+	for(size_t i=0;i<vecACline.size();++i)
+	{
+		if(!vecACline[i].getAClineI_off()  && !vecACline[i].getAClineI_off())
+		{
+			Branch branch(vecACline[i].getAClineI_node(),vecACline[i].getAClineJ_node(),
+					-1,vecACline[i].getAClineR(),vecACline[i].getAClineX(),100);
+			size_t k=0;
+			for(;k<vecBranch.size();++k)
+			{
+				if(vecBranch[k]==branch)
+					break;
+			}
+			if(k<vecBranch.size())
+				continue;
+			vecBranch.push_back(branch);
+		}
+	}
+	
+	const int startPos=vecBranch.size();
+	for(size_t i=0;i<vecTrans.size();++i)
+	{
+		if(!vecTrans[i].getTransI_off() && !vecTrans[i].getTransK_off())
+		{
+			Branch branch(vecTrans[i].getTransI_node(),vecTrans[i].getTransK_node(),
+					i,0,0,100);
+			size_t k=startPos;
+			for(;k<vecBranch.size();++k)
+			{//其实没必要从头开始判断，因为ACline的线路中都不含变压器
+				if(vecBranch[k]==branch)
+					break;
+			}
+			if(k<vecBranch.size())
+				continue;
+			vecBranch.push_back(branch);
+		}
+		
+		if(!vecTrans[i].getTransK_off() && !vecTrans[i].getTransJ_off())
+		{
+			Branch branch(vecTrans[i].getTransK_node(),vecTrans[i].getTransJ_node(),
+					i,0,0,100);
+			size_t k=startPos;
+			for(;k<vecBranch.size();++k)
+			{//其实没必要从头开始判断，因为ACline的线路中都不含变压器
+				if(vecBranch[k]==branch)
+					break;
+			}
+			if(k<vecBranch.size())
+				continue;
+			vecBranch.push_back(branch);
+		}
+	}
+	return vecBranch;
+}
+vector<string> busNameInBranchList(vector<Branch>& vecBranch)
+{//获取支路中的节点总数
+	vector<string> vecString;
+	for(size_t i=0;i<vecBranch.size();++i)
+	{
+		string busNameI,busNameJ;
+		busNameI=vecBranch[i].getStartBus();
+		busNameJ=vecBranch[i].getEndBus();
+		bool busNameIFlag=false,busNameJFlag=false;
+		
+		for(size_t j=0;j<vecString.size();++j)
+		{
+			if(vecString[j]==busNameI)
+				busNameIFlag=true;
+			else if(vecString[j]==busNameJ)
+				busNameJFlag=true;
+			if(busNameIFlag && busNameJFlag)
+				break;
+		}
+		if(!busNameIFlag)vecString.push_back(busNameI);
+		if(!busNameJFlag)vecString.push_back(busNameJ);
+	}
+	return vecString;
 }

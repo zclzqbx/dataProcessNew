@@ -12,6 +12,8 @@ ofstream output2("aclinedata.txt",ios::ate);
 ofstream output3("toponodedata.txt",ios::ate);
 ofstream output4("unitdata.txt",ios::ate);
 ofstream output5("transformerdata.txt",ios::ate);
+ofstream output6("busInTransformer.txt",ios::ate);
+ofstream output7("totalBranch.txt",ios::ate);
 
 int main()
 {
@@ -21,8 +23,7 @@ int main()
 	vector<Transformer> transformerList;
 	vector<Unit> unitList;
 	
-	getData(input,busList,aclineList,topoNodeList,
-			unitList,transformerList);
+	getData(input,busList,aclineList,topoNodeList,unitList,transformerList);
 	
 	// int printNum=0;
 	for(size_t i=0;i!=busList.size();++i)
@@ -103,13 +104,29 @@ int main()
 	
 	cout<<"Bus中在线的节点:"<<getNumberOfBusOnline(busList)<<endl;
 	cout<<"ACline中在线的支路:"<<getNumberOfAClineOnline(aclineList)<<endl;
-	cout<<"Unit中在线的机组:"<<getNumberOfUnitOnline(unitList)<<endl;
+	cout<<"Unit中在线的机组:"<<getNumberOfUnitOnline(unitList)<<endl;	
+	cout<<"ACline中出现的所有节点:"<<busNameInAcline(aclineList).size()<<endl;
+	vector<string> busInTrans=busNameInTransformer(transformerList);
+	cout<<"Transformer中出现的所有节点:"<<busInTrans.size()<<endl;
+	for(size_t i=0;i<busInTrans.size();++i)
+		output6<<busInTrans[i]<<endl;
 	
+	vector<Branch> branchList;
+	branchList=totalBranch(aclineList,transformerList);
+	cout<<"支路总数:"<<branchList.size()<<endl;
+	for(size_t i=0;i<branchList.size();++i)
+	{
+		output7<<branchList[i]<<endl;
+	}
+	
+	cout<<"BranList中的总节点数："<<busNameInBranchList(branchList).size()<<endl;
 	input.close();
 	output1.close();
 	output2.close();
 	output3.close();
 	output4.close();
 	output5.close();
+	output6.close();
+	output7.close();
 	return 0;
 }

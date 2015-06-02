@@ -19,9 +19,9 @@ Transformer createTransformer(int code,int type,int i_Vol,int k_Vol,
 							int itap_L,int itap_E,double itap_C,int itap_V,
 							int ktap_H,int ktap_L,int ktap_E,double ktap_C,
 							int ktap_V,int jtap_V,double ri,double xi,double rk,
-							double xk,double rj,double xj,int i_node,int k_node,
-							int j_node,double i_p,double i_q,double k_p,double k_q,
-							double j_p,double j_q,int i_tap,int k_tap);
+							double xk,double rj,double xj,string i_node,string k_node,
+							string j_node,double i_p,double i_q,double k_p,double k_q,
+							double j_p,double j_q,int i_tap,int k_tap,bool iOff,bool kOff,bool jOff);
 //数据获取			
 void getBusData(ifstream& ,vector<Bus>&);
 void getAClineData(ifstream& ,vector<ACline>&);
@@ -38,5 +38,11 @@ int getNumberOfBusOnline(vector<Bus>& );
 int getNumberOfAClineOnline(vector<ACline>& );
 // vector<string> getOnlineBusName
 int getNumberOfUnitOnline(vector<Unit>& );
-				
+vector<string> busNameInAcline(vector<ACline>& );
+vector<string> busNameInTransformer(vector<Transformer>& );
+
+
+vector<Branch> totalBranch(vector<ACline>& ,vector<Transformer>& );
+
+vector<string> busNameInBranchList(vector<Branch>& );
 #endif //SHARE_FUNCTION

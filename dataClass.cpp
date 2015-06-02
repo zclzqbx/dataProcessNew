@@ -187,6 +187,39 @@ ostream& operator<<(ostream& output,Transformer& transformer)//输出
 	output<<"低压端无功功率:"<<transformer.getTransJ_Q()<<endl;
 	output<<"高压侧分接头位置:"<<transformer.getTransI_tap()<<endl;
 	output<<"中压侧分接头位置:"<<transformer.getTransK_tap()<<endl;
+	output<<"高压侧断开标志:"<<transformer.getTransI_off()<<endl;
+	output<<"中压侧断开标志:"<<transformer.getTransK_off()<<endl;
+	output<<"低压侧断开标志:"<<transformer.getTransJ_off()<<endl;
 	
 	return output;
 }
+
+
+//Branch
+bool Branch::operator==(const Branch& branch)
+{
+	return((this->getStartBus()==branch.getStartBus() && this->getEndBus()==branch.getEndBus())
+	     || (this->getStartBus()==branch.getEndBus() && this->getEndBus()==branch.getStartBus()));
+}
+
+ostream& operator<<(ostream& output,Branch& branch)
+{
+	output<<"支路起点:"<<branch.getStartBus()<<endl;
+	output<<"支路终点:"<<branch.getEndBus()<<endl;
+	output<<"支路变压器编号:"<<branch.getTransFlag()<<endl;
+	output<<"支路电阻:"<<branch.getResistance()<<endl;
+	output<<"支路电抗:"<<branch.getReactance()<<endl;
+	output<<"支路潮流上限:"<<branch.getPowerLimit()<<endl;
+	return output;
+}
+
+Branch::Branch(string sbus,string ebus,int flag,double r,double x,double limit)
+{
+	startBus=sbus;
+	endBus=ebus;
+	transFlag=flag;
+	resistance=r;
+	reactance=x;
+	powerLimit=limit;
+}
+
