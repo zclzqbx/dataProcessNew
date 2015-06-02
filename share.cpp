@@ -1,4 +1,5 @@
 #include "share.h"
+#include "fstring.h"
 
 Bus createBus(int code,string name,int volt,double V,
 	double ang,bool off,double V_max,double V_min)//创建新节点
@@ -595,8 +596,383 @@ void getUnit(ifstream& input,vector<Unit>& vecUnit)
 	}
 }
 
+Transformer createTransformer(int code,int type,int i_Vol,int k_Vol,int j_Vol,int i_S,int k_S,int j_S,
+int itap_H,int itap_L,int itap_E,double itap_C,int itap_V,int ktap_H,int ktap_L,int ktap_E,double ktap_C,int ktap_V,int jtap_V,
+double ri,double xi,double rk,double xk,double rj,double xj,int i_node,int k_node,int j_node,double i_p,double i_q,double k_p,double k_q,double j_p,double j_q,
+int i_tap,int k_tap)//创建新线路
+{
+	Transformer trans;
+	trans.setTransCode(code);
+	trans.setTransType(type);
+	trans.setTransI_Vol(i_Vol);
+	trans.setTransK_Vol(k_Vol);
+	trans.setTransJ_Vol(j_Vol);
+	trans.setTransI_S(i_S);
+	trans.setTransK_S(k_S);
+	trans.setTransJ_S(j_S);
+	trans.setTransItap_H(itap_H);
+	trans.setTransItap_L(itap_L);
+	trans.setTransItap_E(itap_E);
+	trans.setTransItap_C(itap_C);
+	trans.setTransItap_V(itap_V);
+	trans.setTransKtap_H(ktap_H);
+	trans.setTransKtap_L(ktap_L);
+	trans.setTransKtap_E(ktap_E);
+	trans.setTransKtap_C(ktap_C);
+	trans.setTransKtap_V(ktap_V);
+	trans.setTransJtap_V(jtap_V);
+	trans.setTransRi(ri);
+	trans.setTransXi(xi);
+	trans.setTransRk(rk);
+	trans.setTransXk(xk);
+	trans.setTransRj(rj);
+	trans.setTransXj(xj);
+	trans.setTransI_node(i_node);
+	trans.setTransK_node(k_node);
+	trans.setTransJ_node(j_node);
+	trans.setTransI_P(i_p);
+	trans.setTransI_Q(i_q);
+	trans.setTransK_P(k_p);
+	trans.setTransK_Q(k_q);
+	trans.setTransJ_P(j_p);
+	trans.setTransJ_Q(j_q);
+	trans.setTransI_tap(i_tap);
+	trans.setTransK_tap(k_tap);
+	
+	return trans;
+}
+
+void getTransData(ifstream& input,vector<Transformer>& vecTrans)
+{//读取所有节点或其他信息函数
+	if(!input)
+		return;
+	string str;
+	
+	while(1)
+	{
+		str.clear();
+		getline(input,str);
+		if(str=="<Transformer::nx type=全数>")
+		{
+			int i=0;
+			str.clear();
+			getline(input,str);
+			vector<string> vecTransHeader=split(str);
+			
+			//识别表头
+			int transCodeColumn(0);
+			int transTypeColumn(0);
+			int transI_VolColumn(0);
+			int transK_VolColumn(0);
+			int transJ_VolColumn(0);
+			int transI_SColumn(0);
+			int transK_SColumn(0);
+			int transJ_SColumn(0);
+			int transItap_HColumn(0);
+			int transItap_LColumn(0);
+			int transItap_EColumn(0);
+			int transItap_CColumn(0);
+			int transItap_VColumn(0);
+			int transKtap_HColumn(0);
+			int transKtap_LColumn(0);
+			int transKtap_EColumn(0);
+			int transKtap_CColumn(0);
+			int transKtap_VColumn(0);
+			int transJtap_VColumn(0);
+			int transRiColumn(0);
+			int transXiColumn(0);
+			int transRkColumn(0);
+			int transXkColumn(0);
+			int transRjColumn(0);
+			int transXjColumn(0);
+			int transI_nodeColumn(0);
+			int transK_nodeColumn(0);
+			int transJ_nodeColumn(0);
+			int transI_PColumn(0);
+			int transI_QColumn(0);
+			int transK_PColumn(0);
+			int transK_QColumn(0);
+			int transJ_PColumn(0);
+			int transJ_QColumn(0);
+			int transI_tapColumn(0);
+			int transK_tapColumn(0);
+
+			for(size_t t=0;t<vecTransHeader.size();++t)
+			{
+				if(vecTransHeader[t]=="id")
+				{
+					transCodeColumn=t;
+				}
+				else if(vecTransHeader[t]=="type")
+				{
+					transTypeColumn=t;
+				}
+				else if(vecTransHeader[t]=="I_Vol")
+				{
+					transI_VolColumn=t;
+				}
+				else if(vecTransHeader[t]=="K_Vol")
+				{
+					transK_VolColumn=t;
+				}
+				else if(vecTransHeader[t]=="J_Vol")
+				{
+					transJ_VolColumn=t;
+				}
+				else if(vecTransHeader[t]=="I_S")
+				{
+					transI_SColumn=t;
+				}
+				else if(vecTransHeader[t]=="K_S")
+				{
+					transK_SColumn=t;
+				}
+				else if(vecTransHeader[t]=="J_S")
+				{
+					transJ_SColumn=t;
+				}
+				else if(vecTransHeader[t]=="Itap_H")
+				{
+					transItap_HColumn=t;
+				}
+				else if(vecTransHeader[t]=="Itap_L")
+				{
+					transItap_LColumn=t;
+				}
+				else if(vecTransHeader[t]=="Itap_E")
+				{
+					transItap_EColumn=t;
+				}
+				else if(vecTransHeader[t]=="Itap_C")
+				{
+					transItap_CColumn=t;
+				}
+				else if(vecTransHeader[t]=="Itap_V")
+				{
+					transItap_VColumn=t;
+				}
+				else if(vecTransHeader[t]=="Ktap_H")
+				{
+					transKtap_HColumn=t;
+				}
+				else if(vecTransHeader[t]=="Ktap_L")
+				{
+					transKtap_LColumn=t;
+				}
+				else if(vecTransHeader[t]=="Ktap_E")
+				{
+					transKtap_EColumn=t;
+				}
+				else if(vecTransHeader[t]=="Ktap_C")
+				{
+					transKtap_CColumn=t;
+				}
+				else if(vecTransHeader[t]=="Ktap_V")
+				{
+					transKtap_VColumn=t;
+				}
+				else if(vecTransHeader[t]=="Jtap_V")
+				{
+					transJtap_VColumn=t;
+				}
+				else if(vecTransHeader[t]=="Ri")
+				{
+					transRiColumn=t;
+				}
+				else if(vecTransHeader[t]=="Xi")
+				{
+					transXiColumn=t;
+				}
+				else if(vecTransHeader[t]=="Rk")
+				{
+					transRkColumn=t;
+				}
+				else if(vecTransHeader[t]=="Xk")
+				{
+					transXkColumn=t;
+				}
+				else if(vecTransHeader[t]=="Rj")
+				{
+					transRjColumn=t;
+				}
+				else if(vecTransHeader[t]=="Xj")
+				{
+					transXjColumn=t;
+				}
+				else if(vecTransHeader[t]=="I_node")
+				{
+					transI_nodeColumn=t;
+				}
+				else if(vecTransHeader[t]=="K_node")
+				{
+					transK_nodeColumn=t;
+				}
+				else if(vecTransHeader[t]=="J_node")
+				{
+					transJ_nodeColumn=t;
+				}
+				else if(vecTransHeader[t]=="I_P")
+				{
+					transI_PColumn=t;
+				}
+				else if(vecTransHeader[t]=="I_Q")
+				{
+					transI_QColumn=t;
+				}
+				else if(vecTransHeader[t]=="K_P")
+				{
+					transK_PColumn=t;
+				}
+				else if(vecTransHeader[t]=="K_Q")
+				{
+					transK_QColumn=t;
+				}
+				else if(vecTransHeader[t]=="J_P")
+				{
+					transJ_PColumn=t;
+				}
+				else if(vecTransHeader[t]=="J_Q")
+				{
+					transJ_QColumn=t;
+				}
+				else if(vecTransHeader[t]=="I_tap")
+				{
+					transI_tapColumn=t;
+				}
+				else if(vecTransHeader[t]=="K_tap")
+				{
+					transK_tapColumn=t;
+				}
+				
+				else
+					continue;
+			}
+			
+			const int transCodeColumnConst=transCodeColumn;
+			const int transTypeColumnConst=transTypeColumn;
+			const int transI_VolColumnConst=transI_VolColumn;
+			const int transK_VolColumnConst=transK_VolColumn;
+			const int transJ_VolColumnConst=transJ_VolColumn;
+			const int transI_SColumnConst=transI_SColumn;
+			const int transK_SColumnConst=transK_SColumn;
+			const int transJ_SColumnConst=transJ_SColumn;
+			const int transItap_HColumnConst=transItap_HColumn;
+			const int transItap_LColumnConst=transItap_LColumn;
+			const int transItap_EColumnConst=transItap_EColumn;
+			const int transItap_CColumnConst=transItap_CColumn;
+			const int transItap_VColumnConst=transItap_VColumn;
+			const int transKtap_HColumnConst=transKtap_HColumn;
+			const int transKtap_LColumnConst=transKtap_LColumn;
+			const int transKtap_EColumnConst=transKtap_EColumn;
+			const int transKtap_CColumnConst=transKtap_CColumn;
+			const int transKtap_VColumnConst=transKtap_VColumn;
+			const int transJtap_VColumnConst=transJtap_VColumn;
+			const int transRiColumnConst=transRiColumn;
+			const int transXiColumnConst=transXiColumn;
+			const int transRkColumnConst=transRkColumn;
+			const int transXkColumnConst=transXkColumn;
+			const int transRjColumnConst=transRjColumn;
+			const int transXjColumnConst=transXjColumn;
+			const int transI_nodeColumnConst=transI_nodeColumn;
+			const int transK_nodeColumnConst=transK_nodeColumn;
+			const int transJ_nodeColumnConst=transJ_nodeColumn;
+			const int transI_PColumnConst=transI_PColumn;
+			const int transI_QColumnConst=transI_QColumn;
+			const int transK_PColumnConst=transK_PColumn;
+			const int transK_QColumnConst=transK_QColumn;
+			const int transJ_PColumnConst=transJ_PColumn;
+			const int transJ_QColumnConst=transJ_QColumn;
+			const int transI_tapColumnConst=transI_tapColumn;
+			const int transK_tapColumnConst=transK_tapColumn;
+			//记录所需要行列的位置
+
+			str.clear();//其中一行数据是不需要的，先清除一行数据
+			getline(input,str);
+			str.clear();
+			getline(input,str);
+			
+			while(str!="</Transformer::nx>")
+			{
+				vector<string> vec=split(str);
+				//所有数据都已经存放在vec中，接下来是选出有用数据,对数所进行转换
+				int code=stringToInt(vec[transCodeColumnConst]);
+				int type=stringToInt(vec[transTypeColumnConst]);
+				int i_vol=stringToInt(vec[transI_VolColumnConst]);
+				int k_vol=stringToInt(vec[transK_VolColumnConst]);
+				int j_vol=stringToInt(vec[transJ_VolColumnConst]);
+				int i_s=stringToInt(vec[transI_SColumnConst]);
+				int k_s=stringToInt(vec[transK_SColumnConst]);
+				int j_s=stringToInt(vec[transJ_SColumnConst]);
+				int itap_h=stringToInt(vec[transItap_HColumnConst]);
+				int itap_l=stringToInt(vec[transItap_LColumnConst]);
+				int itap_e=stringToInt(vec[transItap_EColumnConst]);
+				double itap_c=stringToDouble(vec[transItap_CColumnConst]);
+				int itap_v=stringToInt(vec[transItap_VColumnConst]);
+				int ktap_h=stringToInt(vec[transKtap_HColumnConst]);
+				int ktap_l=stringToInt(vec[transKtap_LColumnConst]);
+				int ktap_e=stringToInt(vec[transKtap_EColumnConst]);
+				double ktap_c=stringToDouble(vec[transKtap_CColumnConst]);
+				int ktap_v=stringToInt(vec[transKtap_VColumnConst]);
+				int jtap_v=stringToInt(vec[transJtap_VColumnConst]);
+				double ri=stringToDouble(vec[transRiColumnConst]);
+				double xi=stringToDouble(vec[transXiColumnConst]);
+				double rk=stringToDouble(vec[transRkColumnConst]);
+				double xk=stringToDouble(vec[transXkColumnConst]);
+				double rj=stringToDouble(vec[transRjColumnConst]);
+				double xj=stringToDouble(vec[transXjColumnConst]);
+				int i_node=stringToInt(vec[transI_nodeColumnConst]);
+				int k_node=stringToInt(vec[transK_nodeColumnConst]);
+				int j_node=stringToInt(vec[transJ_nodeColumnConst]);
+				double i_p=stringToDouble(vec[transI_PColumnConst]);
+				double i_q=stringToDouble(vec[transI_QColumnConst]);
+				double k_p=stringToDouble(vec[transK_PColumnConst]);
+				double k_q=stringToDouble(vec[transK_QColumnConst]);
+				double j_p=stringToDouble(vec[transJ_PColumnConst]);
+				double j_q=stringToDouble(vec[transJ_QColumnConst]);
+				int i_tap=stringToInt(vec[transI_tapColumnConst]);
+				int k_tap=stringToInt(vec[transK_tapColumnConst]);
+
+				
+				//判断Transformer两端节点是否都在Bus表内，并找到对应的拓扑节点编号，满足则为有用信息
+				/*int i_node=0;
+				int j_node=0;//拓扑节点编号
+				for(vector<Bus>::iterator iter=vecBus.begin();iter!=vecBus.end();++iter)
+				{
+					if( i_nodename==(*iter).getBusName() )
+						i_node=(*iter).getBusCode();
+					if( j_nodename==(*iter).getBusName() )
+						j_node=(*iter).getBusCode();
+				}*/				
+				
+				Transformer trans=createTransformer( code, type, i_vol, k_vol, j_vol, i_s, k_s, j_s,
+				itap_h, itap_l, itap_e, itap_c, itap_v, ktap_h, ktap_l, ktap_e, ktap_c, ktap_v, jtap_v,
+				ri, xi, rk, xk, rj, xj, i_node, k_node, j_node, i_p, i_q, k_p, k_q, j_p, j_q,
+				i_tap, k_tap);
+				size_t t=0;
+				for(;t<vecTrans.size();++t)
+				{
+					if(vecTrans[t]==trans)
+					{
+						str.clear();
+						getline(input,str);
+						break;
+					}
+				}
+				if(t<vecTrans.size())continue;
+				vecTrans.push_back(trans);
+				i++;
+				
+				str.clear();
+				getline(input,str);
+			}
+		}
+		if(str=="</Transformer::nx>")
+			break;
+	}
+}
+
 void getData(ifstream& input,vector<Bus>& vecBus,vector<ACline>& vecACLine,
-				vector<TopoNode>& vecTopoNode,vector<Unit>& vecUnit)
+				vector<TopoNode>& vecTopoNode,vector<Unit>& vecUnit,vector<Transformer>& vecTransformer)
 {//调用其他get函数，一次性读取
 //有必要了解input的getline是怎么工作的。
 //使用过一次，然后再次使用是有影响的
@@ -604,9 +980,13 @@ void getData(ifstream& input,vector<Bus>& vecBus,vector<ACline>& vecACLine,
 	getBusData(input,vecBus);
 	getAClineData(input,vecACLine);	
 	getUnit(input,vecUnit);
+	getTransData(input,vecTransformer);
+	//load函数位置
 	getTopoNode(input,vecTopoNode);
+	
 }
 
+//其他函数
 int getNumberOfBusOnline(vector<Bus>& vecBus)
 {
 	int Num(0);

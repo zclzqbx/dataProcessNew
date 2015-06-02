@@ -11,16 +11,18 @@ ofstream output1("busdata.txt",ios::ate);
 ofstream output2("aclinedata.txt",ios::ate);
 ofstream output3("toponodedata.txt",ios::ate);
 ofstream output4("unitdata.txt",ios::ate);
-// ofstream output5("aclineBreakBus.txt",ios::ate);
+ofstream output5("transformerdata.txt",ios::ate);
 
 int main()
 {
 	vector<Bus> busList;//存放了所有节点
 	vector<ACline> aclineList;//存放了所有ACline
 	vector<TopoNode> topoNodeList;
+	vector<Transformer> transformerList;
 	vector<Unit> unitList;
 	
-	getData(input,busList,aclineList,topoNodeList,unitList);
+	getData(input,busList,aclineList,topoNodeList,
+			unitList,transformerList);
 	
 	// int printNum=0;
 	for(size_t i=0;i!=busList.size();++i)
@@ -94,6 +96,10 @@ int main()
 			continue;
 	}
 	output5<<endl<<breakBusInAcline<<endl;*/
+	for(size_t i=0;i<transformerList.size();++i)
+	{
+		output5<<transformerList[i]<<endl;
+	}	
 	
 	cout<<"Bus中在线的节点:"<<getNumberOfBusOnline(busList)<<endl;
 	cout<<"ACline中在线的支路:"<<getNumberOfAClineOnline(aclineList)<<endl;
@@ -104,5 +110,6 @@ int main()
 	output2.close();
 	output3.close();
 	output4.close();
+	output5.close();
 	return 0;
 }
