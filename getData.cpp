@@ -14,6 +14,7 @@ ofstream output4("unitdata.txt",ios::ate);
 ofstream output5("transformerdata.txt",ios::ate);
 ofstream output6("busInTransformer.txt",ios::ate);
 ofstream output7("totalBranch.txt",ios::ate);
+ofstream output8("busNameInBranch.txt",ios::ate);
 
 int main()
 {
@@ -116,10 +117,17 @@ int main()
 	cout<<"支路总数:"<<branchList.size()<<endl;
 	for(size_t i=0;i<branchList.size();++i)
 	{
-		output7<<branchList[i]<<endl;
+		// output7<<branchList[i]<<endl;
+		branchList[i].printUnitStyle(output7);
 	}
 	
-	cout<<"BranList中的总节点数："<<busNameInBranchList(branchList).size()<<endl;
+	vector<string> vecBranchBusName;
+	vecBranchBusName=busNameInBranchList(branchList);
+	cout<<"BranList中的总节点数："<<vecBranchBusName.size()<<endl;
+	for(size_t i=0;i<vecBranchBusName.size();++i)
+	{
+		output8<<vecBranchBusName[i]<<endl;
+	}
 	input.close();
 	output1.close();
 	output2.close();
@@ -128,5 +136,6 @@ int main()
 	output5.close();
 	output6.close();
 	output7.close();
+	output8.close();
 	return 0;
 }

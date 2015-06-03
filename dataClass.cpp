@@ -223,3 +223,8 @@ Branch::Branch(string sbus,string ebus,int flag,double r,double x,double limit)
 	powerLimit=limit;
 }
 
+void Branch::printUnitStyle(ostream& output)
+{
+	output<<startBus<<"   "<<endBus<<"   "<<resistance<<
+		"   "<<reactance<<"   "<<powerLimit<<endl;
+}

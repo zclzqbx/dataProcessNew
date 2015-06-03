@@ -339,7 +339,8 @@ public:
 	double getPowerLimit()const{return powerLimit;}
 	
 	bool operator==(const Branch&);
-	friend ostream& operator<<(ostream& ,Branch&);	
+	friend ostream& operator<<(ostream& ,Branch&);
+	void printUnitStyle(ostream& );
 private:
 	string startBus;//Æðµã
 	string endBus;//ÖÕµã

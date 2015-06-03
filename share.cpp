@@ -1035,8 +1035,7 @@ int getNumberOfAClineOnline(vector<ACline>& vecACline)
 	for(size_t i=0;i<vecACline.size();++i)
 	{
 		if(!vecACline[i].getAClineI_off() && !vecACline[i].getAClineJ_off())
-			Num++;
-			
+			Num++;			
 	}
 	return Num;
 }
@@ -1107,56 +1106,76 @@ vector<string> busNameInTransformer(vector<Transformer>& vecTransformer)
 }
 
 vector<Branch> totalBranch(vector<ACline>& vecACline,vector<Transformer>& vecTrans)
-{
+{//从ACline和Transformer中获取支路信息
 	vector<Branch> vecBranch;
 	for(size_t i=0;i<vecACline.size();++i)
 	{
-		if(!vecACline[i].getAClineI_off()  && !vecACline[i].getAClineI_off())
-		{
+		if(!vecACline[i].getAClineI_off()  && !vecACline[i].getAClineJ_off())
+		{//如果两端都未断开
 			Branch branch(vecACline[i].getAClineI_node(),vecACline[i].getAClineJ_node(),
 					-1,vecACline[i].getAClineR(),vecACline[i].getAClineX(),100);
-			size_t k=0;
-			for(;k<vecBranch.size();++k)
-			{
-				if(vecBranch[k]==branch)
-					break;
-			}
-			if(k<vecBranch.size())
-				continue;
+			// size_t k=0;
+			// for(;k<vecBranch.size();++k)
+			// {
+				// if(vecBranch[k]==branch)
+					// break;
+			// }
+			// if(k<vecBranch.size())
+				// continue;
 			vecBranch.push_back(branch);
 		}
 	}
 	
-	const int startPos=vecBranch.size();
+	// const int startPos=vecBranch.size();
+	//ACline中的支路和Transformer中的支路是不可能重复的，因为ACline中的
+	//支路应该都属于同一电压等级
 	for(size_t i=0;i<vecTrans.size();++i)
 	{
-		if(!vecTrans[i].getTransI_off() && !vecTrans[i].getTransK_off())
-		{
+		if(!vecTrans[i].getTransI_off() && !vecTrans[i].getTransK_off()
+			&& vecTrans[i].getTransI_node()!="0" && vecTrans[i].getTransK_node()!="0")
+		{//如果两端都未断开
 			Branch branch(vecTrans[i].getTransI_node(),vecTrans[i].getTransK_node(),
 					i,0,0,100);
-			size_t k=startPos;
-			for(;k<vecBranch.size();++k)
-			{//其实没必要从头开始判断，因为ACline的线路中都不含变压器
-				if(vecBranch[k]==branch)
-					break;
-			}
-			if(k<vecBranch.size())
-				continue;
+			// size_t k=startPos;
+			// for(;k<vecBranch.size();++k)
+			// {//其实没必要从头开始判断，因为ACline的线路中都不含变压器
+				// if(vecBranch[k]==branch)//校验存在性
+					// break;
+			// }
+			// if(k<vecBranch.size())
+				// continue;
 			vecBranch.push_back(branch);
 		}
 		
-		if(!vecTrans[i].getTransK_off() && !vecTrans[i].getTransJ_off())
+		if(!vecTrans[i].getTransK_off() && !vecTrans[i].getTransJ_off()
+			&& vecTrans[i].getTransK_node()!="0" && vecTrans[i].getTransJ_node()!="0")
 		{
 			Branch branch(vecTrans[i].getTransK_node(),vecTrans[i].getTransJ_node(),
 					i,0,0,100);
-			size_t k=startPos;
-			for(;k<vecBranch.size();++k)
-			{//其实没必要从头开始判断，因为ACline的线路中都不含变压器
-				if(vecBranch[k]==branch)
-					break;
-			}
-			if(k<vecBranch.size())
-				continue;
+			// size_t k=startPos;
+			// for(;k<vecBranch.size();++k)
+			// {//其实没必要从头开始判断，因为ACline的线路中都不含变压器
+				// if(vecBranch[k]==branch)
+					// break;
+			// }
+			// if(k<vecBranch.size())
+				// continue;
+			vecBranch.push_back(branch);
+		}
+		
+		if(vecTrans[i].getTransK_node()=="0" && !vecTrans[i].getTransI_off() && !vecTrans[i].getTransJ_off()
+			&& vecTrans[i].getTransI_node()!="0" && vecTrans[i].getTransJ_node()!="0")
+		{
+			Branch branch(vecTrans[i].getTransI_node(),vecTrans[i].getTransJ_node(),
+					i,0,0,100);
+			// size_t k=startPos;
+			// for(;k<vecBranch.size();++k)
+			// {//其实没必要从头开始判断，因为ACline的线路中都不含变压器
+				// if(vecBranch[k]==branch)
+					// break;
+			// }
+			// if(k<vecBranch.size())
+				// continue;
 			vecBranch.push_back(branch);
 		}
 	}
