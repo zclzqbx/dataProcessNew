@@ -1002,8 +1002,122 @@ void getTransData(ifstream& input,vector<Transformer>& vecTrans)
 	}
 }
 
+Load createLoad(int volt,int eq,string node,double p,double q,bool off)//创建新节点
+{
+	Load load;
+	load.setLoadVolt(volt);
+	load.setLoadEq(eq);
+	load.setLoadNode(node);
+	load.setLoadP(p);
+	load.setLoadQ(q);
+	load.setLoadOff(off);
+	return load;
+}
+
+void getLoadData(ifstream& input,vector<Load>& vecLoad)
+{//读取所有节点或其他信息函数
+	if(!input)
+		return;
+	string str;
+	
+	while(1)
+	{
+		str.clear();
+		getline(input,str);
+		if(str=="<Load::nx type=全数>")
+		{
+		
+			str.clear();
+			getline(input,str);
+			vector<string> vecLoadHeader=split(str);
+			
+			int loadVoltColumn(0);//识别表头
+			int loadEqColumn(0);
+			int loadNodeColumn(0);
+			int loadPColumn(0);
+			int loadQColumn(0);
+			int loadOffColumn(0);
+	
+			for(size_t t=0;t<vecLoadHeader.size();++t)
+			{
+				if(vecLoadHeader[t]=="volt")
+				{
+					loadVoltColumn=t;
+				}
+				else if(vecLoadHeader[t]=="Eq")
+				{
+					loadEqColumn=t;
+				}
+				else if(vecLoadHeader[t]=="node")
+				{
+					loadNodeColumn=t;
+				}
+				else if(vecLoadHeader[t]=="P")
+				{
+					loadPColumn=t;
+				}
+				else if(vecLoadHeader[t]=="Q")
+				{
+					loadQColumn=t;
+				}
+				else if(vecLoadHeader[t]=="off")
+				{
+					loadOffColumn=t;
+				}
+		
+				else
+					continue;
+			}
+			const int loadVoltColumnConst=loadVoltColumn;
+			const int loadEqColumnConst=loadEqColumn;
+			const int loadNodeColumnConst=loadNodeColumn;
+			const int loadPColumnConst=loadPColumn;
+			const int loadQColumnConst=loadQColumn;
+			const int loadOffColumnConst=loadOffColumn;
+			
+			//记录所需要行列的位置
+
+			str.clear();//其中一行数据是不需要的，先清除一行数据
+			getline(input,str);
+			str.clear();
+			getline(input,str);
+			
+			while(str!="</Load::nx>")
+			{
+				vector<string> vec=split(str);
+				//所有数据都已经存放在vec中，接下来是选出有用数据,对数所进行转换
+				int volt=stringToInt(vec[loadVoltColumnConst]);
+				int eq=stringToInt(vec[loadEqColumnConst]);
+				string node=vec[loadNodeColumnConst];
+				double p=stringToDouble(vec[loadPColumnConst]);
+				double q=stringToDouble(vec[loadQColumnConst]);
+				bool off=stringToBool(vec[loadOffColumnConst]);
+				Load load=createLoad(volt,eq,node,p,q,off);
+				/*size_t t=0;
+				for(;t<vecLoad.size();++t)
+				{
+					if(vecLoad[t]==load)
+					{
+						str.clear();
+						getline(input,str);
+						break;
+					}
+				}
+				if(t<vecLoad.size())continue;*/
+				vecLoad.push_back(load);
+				
+				str.clear();
+				getline(input,str);
+			}
+		}
+		if(str=="</Load::nx>")
+			break;
+	}
+}
+
 void getData(ifstream& input,vector<Bus>& vecBus,vector<ACline>& vecACLine,
-				vector<TopoNode>& vecTopoNode,vector<Unit>& vecUnit,vector<Transformer>& vecTransformer)
+				vector<TopoNode>& vecTopoNode,vector<Unit>& vecUnit,
+				vector<Transformer>& vecTransformer,vector<Load>& vecLoad)
 {//调用其他get函数，一次性读取
 //有必要了解input的getline是怎么工作的。
 //使用过一次，然后再次使用是有影响的
@@ -1013,9 +1127,11 @@ void getData(ifstream& input,vector<Bus>& vecBus,vector<ACline>& vecACLine,
 	getUnit(input,vecUnit);
 	getTransData(input,vecTransformer);
 	//load函数位置
-	getTopoNode(input,vecTopoNode);
-	
+	getLoadData(input,vecLoad);
+	getTopoNode(input,vecTopoNode);	
 }
+
+
 
 //其他函数
 int getNumberOfBusOnline(vector<Bus>& vecBus)

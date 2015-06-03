@@ -228,3 +228,17 @@ void Branch::printUnitStyle(ostream& output)
 	output<<startBus<<"   "<<endBus<<"   "<<resistance<<
 		"   "<<reactance<<"   "<<powerLimit<<endl;
 }
+
+
+//Load
+ostream& operator<<(ostream& output,Load& load)//输出
+{
+	output<<"电压等级:"<<load.getLoadVolt()<<endl;
+	output<<"等值负荷标志:"<<load.getLoadEq()<<endl;
+	output<<"所在拓扑节点:"<<load.getLoadNode()<<endl;
+	output<<"有功功率:"<<load.getLoadP()<<endl;
+	output<<"无功功率:"<<load.getLoadQ()<<endl;
+	output<<"停运标志:"<<load.getLoadOff()<<endl;
+	
+	return output;
+}

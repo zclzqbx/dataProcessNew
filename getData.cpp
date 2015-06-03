@@ -15,6 +15,7 @@ ofstream output5("transformerdata.txt",ios::ate);
 ofstream output6("busInTransformer.txt",ios::ate);
 ofstream output7("totalBranch.txt",ios::ate);
 ofstream output8("busNameInBranch.txt",ios::ate);
+ofstream output9("loaddata.txt",ios::ate);
 
 int main()
 {
@@ -23,8 +24,9 @@ int main()
 	vector<TopoNode> topoNodeList;
 	vector<Transformer> transformerList;
 	vector<Unit> unitList;
+	vector<Load> loadList;
 	
-	getData(input,busList,aclineList,topoNodeList,unitList,transformerList);
+	getData(input,busList,aclineList,topoNodeList,unitList,transformerList,loadList);
 	
 	// int printNum=0;
 	for(size_t i=0;i!=busList.size();++i)
@@ -103,6 +105,10 @@ int main()
 		output5<<transformerList[i]<<endl;
 	}	
 	
+	for(size_t i=0;i<loadList.size();++i)
+	{
+		output9<<loadList[i]<<endl;
+	}
 	cout<<"Bus中在线的节点:"<<getNumberOfBusOnline(busList)<<endl;
 	//获取在线的ACline
 	vector<ACline> aclineOnline=getAClineOnline(aclineList);
@@ -142,5 +148,6 @@ int main()
 	output6.close();
 	output7.close();
 	output8.close();
+	output9.close();
 	return 0;
 }

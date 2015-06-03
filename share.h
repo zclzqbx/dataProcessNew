@@ -13,7 +13,8 @@ ACline createACline(int,string,int,double,double,double,string,string,
 				double,double,double,double,double,string,bool,bool);
 TopoNode createTopoNode(string ,double ,double ,double);
 Unit createUnit(bool,double,double,string,double,double,
-				double,double,bool,double,double,double,double,int);				
+				double,double,bool,double,double,double,double,int);
+Load createLoad(int volt,int eq,string node,double p,double q,bool off);//创建新节点
 Transformer createTransformer(int code,int type,int i_Vol,int k_Vol,
 							int j_Vol,int i_S,int k_S,int j_S,int itap_H,
 							int itap_L,int itap_E,double itap_C,int itap_V,
@@ -27,11 +28,12 @@ void getBusData(ifstream& ,vector<Bus>&);
 void getAClineData(ifstream& ,vector<ACline>&);
 void getTopoNode(ifstream& ,vector<TopoNode>&);
 void getUnit(ifstream& ,vector<Unit>&);
+void getLoadData(ifstream&,vector<Load>&);
 void getTransData(ifstream& input,vector<Transformer>& vecTrans);
 
 //获取全部数据
 void getData(ifstream&  ,vector<Bus>& ,vector<ACline>& ,vector<TopoNode>& ,
-				vector<Unit>& ,vector<Transformer>& );
+				vector<Unit>& ,vector<Transformer>& ,vector<Load>& );
 
 // 其他函数
 //从Bus中获取在线机组的总量

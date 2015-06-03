@@ -350,4 +350,37 @@ private:
 	double powerLimit;//潮流上限
 };
 
+//负荷类
+class Load{
+public:
+//设置参数
+	void setLoadVolt(int volt){loadVolt=volt;}
+	void setLoadEq(int eq){loadEq=eq;}
+	void setLoadNode(string node){loadNode=node;}
+	void setLoadP(double p){loadP=p;}
+	void setLoadQ(double q){loadQ=q;}
+	void setLoadOff(bool off){loadOff=off;}
+	
+//获取参数
+	int getLoadVolt()const{return loadVolt;}
+	int getLoadEq()const{return loadEq;}
+	string getLoadNode()const{return loadNode;}
+	double getLoadP()const{return loadP;}
+	double getLoadQ()const{return loadQ;}
+	bool getLoadOff()const{return loadOff;}
+	
+	// bool operator==(const Bus&);
+//friend bool operator==(const Load&,const Load&);
+friend ostream& operator<<(ostream& ,Load&);	
+	
+private:
+	int loadVolt;//电压等级
+	int loadEq;//等值负荷标志
+	string loadNode; //所在拓扑节点
+	double loadP;//有功功率
+	double loadQ;//无功功率
+	bool loadOff;//停运标志
+
+};
+
 #endif //DATACLASS
