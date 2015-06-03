@@ -1029,15 +1029,15 @@ int getNumberOfBusOnline(vector<Bus>& vecBus)
 	return Num;
 }
 
-int getNumberOfAClineOnline(vector<ACline>& vecACline)
+vector<ACline> getAClineOnline(vector<ACline>& vecACline)
 {
-	int Num(0);
+	vector<ACline> aclineOnline;
 	for(size_t i=0;i<vecACline.size();++i)
 	{
 		if(!vecACline[i].getAClineI_off() && !vecACline[i].getAClineJ_off())
-			Num++;			
+			aclineOnline.push_back(vecACline[i]);			
 	}
-	return Num;
+	return aclineOnline;
 }
 
 int getNumberOfUnitOnline(vector<Unit>& vecUnit)
@@ -1106,7 +1106,7 @@ vector<string> busNameInTransformer(vector<Transformer>& vecTransformer)
 }
 
 vector<Branch> totalBranch(vector<ACline>& vecACline,vector<Transformer>& vecTrans)
-{//从ACline和Transformer中获取支路信息
+{//从ACline和Transformer中获取支路信息，注释部分是重复性校验
 	vector<Branch> vecBranch;
 	for(size_t i=0;i<vecACline.size();++i)
 	{

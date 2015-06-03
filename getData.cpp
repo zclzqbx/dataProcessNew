@@ -104,15 +104,19 @@ int main()
 	}	
 	
 	cout<<"Bus中在线的节点:"<<getNumberOfBusOnline(busList)<<endl;
-	cout<<"ACline中在线的支路:"<<getNumberOfAClineOnline(aclineList)<<endl;
+	//获取在线的ACline
+	vector<ACline> aclineOnline=getAClineOnline(aclineList);
+	cout<<"ACline中在线的支路:"<<aclineOnline.size()<<endl;
 	cout<<"Unit中在线的机组:"<<getNumberOfUnitOnline(unitList)<<endl;	
 	cout<<"ACline中出现的所有节点:"<<busNameInAcline(aclineList).size()<<endl;
+	cout<<"在线ACline中出现的所有节点:"<<busNameInAcline(aclineOnline).size()<<endl;
 	vector<string> busInTrans=busNameInTransformer(transformerList);
 	cout<<"Transformer中出现的所有节点:"<<busInTrans.size()<<endl;
 	for(size_t i=0;i<busInTrans.size();++i)
 		output6<<busInTrans[i]<<endl;
 	
 	vector<Branch> branchList;
+	//获取acline和transformer中的所有在线支路
 	branchList=totalBranch(aclineList,transformerList);
 	cout<<"支路总数:"<<branchList.size()<<endl;
 	for(size_t i=0;i<branchList.size();++i)
@@ -121,9 +125,10 @@ int main()
 		branchList[i].printUnitStyle(output7);
 	}
 	
+	//获取Branch中所有在线的节点
 	vector<string> vecBranchBusName;
 	vecBranchBusName=busNameInBranchList(branchList);
-	cout<<"BranList中的总节点数："<<vecBranchBusName.size()<<endl;
+	cout<<"BranchList中的总节点数："<<vecBranchBusName.size()<<endl;
 	for(size_t i=0;i<vecBranchBusName.size();++i)
 	{
 		output8<<vecBranchBusName[i]<<endl;

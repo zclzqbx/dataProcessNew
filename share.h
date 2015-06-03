@@ -34,15 +34,20 @@ void getData(ifstream&  ,vector<Bus>& ,vector<ACline>& ,vector<TopoNode>& ,
 				vector<Unit>& ,vector<Transformer>& );
 
 // 其他函数
+//从Bus中获取在线机组的总量
 int getNumberOfBusOnline(vector<Bus>& );
-int getNumberOfAClineOnline(vector<ACline>& );
-// vector<string> getOnlineBusName
+//从ACline中获取在线的支路
+vector<ACline> getAClineOnline(vector<ACline>& );
+//获取在线的机组
 int getNumberOfUnitOnline(vector<Unit>& );
+//ACline中的节点名称
 vector<string> busNameInAcline(vector<ACline>& );
+//Transformer中的节点名称
 vector<string> busNameInTransformer(vector<Transformer>& );
-
-
+//Branch中的节点名称
+vector<string> busNameInBranchList(vector<Branch>& );
+//ACline和Transformer中总的支路数
 vector<Branch> totalBranch(vector<ACline>& ,vector<Transformer>& );
 
-vector<string> busNameInBranchList(vector<Branch>& );
+
 #endif //SHARE_FUNCTION
